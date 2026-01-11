@@ -11,4 +11,4 @@ Offline Access: The app works fully offline and can be installed on mobile devic
 Custom Branding: Features the Orban image and the title “SMSV Orban Ministry” on the start page for clear identification.
 
 Purpose:
-This app helps volunteers and staff efficiently prepare Orban dough by providing instant, accurate calculations for each batch, reducing errors and saving time
+This app helps volunteers efficiently prepare Orban dough by providing instant, accurate calculations for each batch, reducing errors and saving time
