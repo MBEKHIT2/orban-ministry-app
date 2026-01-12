@@ -61,9 +61,7 @@
           <div class="metric"><h3>Flour</h3><p id="pasteFlour">-</p></div>
           <div class="metric"><h3>Paste total</h3><p id="pasteTotal">-</p></div>
         </div>
-        <p class="note">
-          <strong>Mix for 15 minutes.</strong> Then wait <strong>15 minutes minimum</strong> for paste to cool down before mixing Step 2.
-        </p>
+        <p class="note"><strong>Mix for 15 minutes.</strong> Then wait <strong>15 minutes minimum</strong> for paste to cool down before mixing Step 2.</p>
       </div>
 
       <div class="card">
@@ -81,71 +79,52 @@
   </main>
 
   <script>
-    // === Replace this JSON block with your records that we generated from the Excel ===
-    // Example structure:
-    // const DATA = {
-    //   "Saturday": { batches: 2, paste_weight_g: 6345, boiling_water_g: 3645, paste_flour_g: 2700,
-    //                 batch_total_weight_g: 21150, step2_total_without_paste_g: 14805,
-    //                 yeast_3g_perkg_g: 63.45, yeast_4g_perkg_g: 84.6,
-    //                 step2_flour_kg: 10, step2_water_ml: 6500,
-    //                 orban_qty: 28, orban_weight_g: 350 },
-    //   ... (Monday, Wednesday, Friday)
-    // };
-    const DATA = ___RECORDS___;
+    // DATA is compiled from your Orban.xlsx (Saturday, Friday, Wednesday, Monday).
+    // It includes: batches, paste totals, computed Step 1 water/flour, Step 2 flour/water, and orban_qty/size.
+    const DATA = {
+      "Saturday":{"batches":2,"paste_weight_g":6345.0,"boiling_water_g":3645.0,"paste_flour_g":2700.0,"batch_total_weight_g":21150.0,"step2_total_without_paste_g":14805.0,"yeast_3g_perkg_g":63.45,"yeast_4g_perkg_g":84.6,"step2_flour_kg":10.0,"step2_water_ml":6500.0,"orban_qty":28,"orban_weight_g":350.0},
+      "Friday":{"batches":1,"paste_weight_g":3105.0,"boiling_water_g":1768.421052631579,"paste_flour_g":1336.578947368421,"batch_total_weight_g":10350.0,"step2_total_without_paste_g":7245.0,"yeast_3g_perkg_g":31.05,"yeast_4g_perkg_g":41.4,"step2_flour_kg":5.0,"step2_water_ml":3250.0,"orban_qty":23,"orban_weight_g":450.0},
+      "Wednesday":{"batches":1,"paste_weight_g":1785.0,"boiling_water_g":1025.0,"paste_flour_g":760.0,"batch_total_weight_g":5950.0,"step2_total_without_paste_g":4165.0,"yeast_3g_perkg_g":17.85,"yeast_4g_perkg_g":23.8,"step2_flour_kg":3.0,"step2_water_ml":1950.0,"orban_qty":17,"orban_weight_g":350.0},
+      "Monday":{"batches":1,"paste_weight_g":1785.0,"boiling_water_g":1025.0,"paste_flour_g":760.0,"batch_total_weight_g":5950.0,"step2_total_without_paste_g":4165.0,"yeast_3g_perkg_g":17.85,"yeast_4g_perkg_g":23.8,"step2_flour_kg":3.0,"step2_water_ml":1950.0,"orban_qty":17,"orban_weight_g":350.0}
+    };
 
     function fmt(n, unit) {
       const v = Number(n);
-      return Number.isFinite(v)
-        ? new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 }).format(v) + (unit ? ` ${unit}` : '')
-        : '-';
+      return Number.isFinite(v) ? new Intl.NumberFormat(undefined, {maximumFractionDigits:2}).format(v) + (unit?` ${unit}`:'') : '-';
     }
-
     function populateDays() {
       const sel = document.getElementById('daySelect');
-      sel.innerHTML = '';
-      Object.keys(DATA).forEach(d => {
-        const opt = document.createElement('option');
-        opt.value = d; opt.textContent = d;
-        sel.appendChild(opt);
+      sel.innerHTML='';
+      Object.keys(DATA).forEach(d=>{
+        const opt=document.createElement('option'); opt.value=d; opt.textContent=d; sel.appendChild(opt);
       });
       sel.value = Object.keys(DATA)[0];
       update();
     }
-
     function currentYeastValue(day) {
-      const r = Array.from(document.querySelectorAll('input[name=yeast]')).find(x => x.checked)?.value || '3';
-      return r === '4' ? DATA[day].yeast_4g_perkg_g : DATA[day].yeast_3g_perkg_g;
+      const r = Array.from(document.querySelectorAll('input[name=yeast]')).find(x=>x.checked)?.value || '3';
+      return r==='4' ? DATA[day].yeast_4g_perkg_g : DATA[day].yeast_3g_perkg_g;
     }
-
     function update() {
-      const day = document.getElementById('daySelect').value;
-      const rec = DATA[day];
-
-      // Summary
-      document.getElementById('batches').textContent    = fmt(rec.batches);
+      const day=document.getElementById('daySelect').value;
+      const rec=DATA[day];
+      document.getElementById('batches').textContent = fmt(rec.batches);
       document.getElementById('batchTotal').textContent = fmt(rec.batch_total_weight_g, 'g');
-      document.getElementById('orbanQty').textContent   = fmt(rec.orban_qty);
-      document.getElementById('orbanSize').textContent  = fmt(rec.orban_weight_g, 'g');
-
-      // Step 1
-      document.getElementById('boilWater').textContent  = fmt(rec.boiling_water_g, 'g / ml');
+      document.getElementById('orbanQty').textContent = fmt(rec.orban_qty);
+      document.getElementById('orbanSize').textContent = fmt(rec.orban_weight_g, 'g');
+      document.getElementById('boilWater').textContent = fmt(rec.boiling_water_g, 'g / ml');
       document.getElementById('pasteFlour').textContent = fmt(rec.paste_flour_g, 'g');
       document.getElementById('pasteTotal').textContent = fmt(rec.paste_weight_g, 'g');
-
-      // Step 2
-      document.getElementById('yeast').textContent      = fmt(currentYeastValue(day), 'g');
-      document.getElementById('flourKg').textContent    = fmt(rec.step2_flour_kg, 'kg');
-      document.getElementById('waterMl').textContent    = fmt(rec.step2_water_ml, 'ml');
+      document.getElementById('yeast').textContent = fmt(currentYeastValue(day), 'g');
+      document.getElementById('flourKg').textContent = fmt(rec.step2_flour_kg, 'kg');
+      document.getElementById('waterMl').textContent = fmt(rec.step2_water_ml, 'ml');
       document.getElementById('step2Total').textContent = fmt(rec.step2_total_without_paste_g, 'g');
     }
-
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', ()=>{
       populateDays();
       document.getElementById('daySelect').addEventListener('change', update);
-      document.querySelectorAll('input[name=yeast]').forEach(r => r.addEventListener('change', update));
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
-      }
+      document.querySelectorAll('input[name=yeast]').forEach(r=>r.addEventListener('change', update));
+      if('serviceWorker' in navigator){ navigator.serviceWorker.register('./service-worker.js').catch(()=>{}); }
     });
   </script>
 </body>
