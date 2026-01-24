@@ -1,14 +1,13 @@
 
 {
   "name": "SMSV Orban Ministry",
-  "short_name": "Orban",
+  "short_name": "SMSV Orban",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f172a",
-  "theme_color": "#14b8a6",
+  "theme_color": "#8B0000",
   "icons": [
-    { "src": "orban.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "orban.png", "sizes": "512x512", "type": "image/png" }
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
   ]
 }
-``
